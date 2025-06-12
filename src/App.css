@@ -7,6 +7,84 @@
   pointer-events: none;
 }
 
+body {
+  background: #282c34;
+}
+
+button.btt__cate {
+  cursor: pointer;
+  color: #706a6a;
+  border: 1px solid #130a0a;
+  padding: 5px;
+  font-size: 17px;
+  transition: 0.3s ease;
+}
+button.btt__cate:hover {
+  color: #b71c1c;
+  background: #ae665fba;
+}
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #c6765e;
+  padding: 0 16px;
+  margin-bottom: 15px;
+}
+.items {
+  margin-top: 20px;
+  /* background: yellow; */
+  width: 100%;
+  overflow-y: auto;
+  height: 200px;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+.add__new__task {
+  width: 100%;
+  /* background: yellowgreen; */
+  margin: 20px 0;
+  height: 43px;
+}
+input {
+  width: 70%;
+  height: 37px;
+  outline: none;
+}
+input:focus {
+  border: 2px solid #b71c1c;
+} 
+form {
+  display: flex;
+  gap: 3px;
+}
+.add__bttn {
+  width: 30%;
+  display: block;
+  height: 43px;
+  background-color: #528c54;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+.add__bttn:hover {
+  background: #4caf50;
+  transition: 0.3s;
+}
+.item__icons button {
+  transition: 0.3s;
+}
+.item__icons button:hover {
+  background: #beb3b3;
+  box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.4);
+}
+.item__content {
+  padding: 15px 0;
+}
+
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;

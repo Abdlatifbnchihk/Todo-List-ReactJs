@@ -1,23 +1,43 @@
-import logo from './logo.svg';
 import './App.css';
+import CardComponent from './CardComponent';
+import { useState } from 'react';
+import { v4 as uuidv4 } from "uuid";
+import { TodosContent } from './Context/MyContext';
+const initialTodos = [
+  {
+    id: uuidv4(),
+    title: "قراءة كتاب",
+    description: "في خمسة ايام",
+    isCompleted: false,
+  },
+  {
+    id: uuidv4(),
+    title: "قراءة كتاب",
+    description: "في خمسة ايام",
+    isCompleted: false,
+  },
+  {
+    id: uuidv4(),
+    title: "قراءة كتاب",
+    description: "في خمسة ايام",
+    isCompleted: false,
+  },
+  {
+    id: uuidv4(),
+    title: "قراءة كتاب",
+    description: "في خمسة ايام",
+    isCompleted: false,
+  },
+];
 
 function App() {
+  const [todos, setTodos] = useState(initialTodos);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App" style={{display: 'flex', margin: '40px auto', background: "#bbdefb" , width: "550px", borderRadius: "14px"}}>
+      <TodosContent.Provider value={{todos, setTodos}}>
+        <CardComponent/>
+      </TodosContent.Provider>  
     </div>
   );
 }
