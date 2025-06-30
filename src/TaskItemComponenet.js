@@ -1,165 +1,49 @@
-import React, { useContext, useState } from "react";
+import { useTodos } from "./Context/MyContext";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Edit } from "@mui/icons-material";
-import { TodosContent } from "./Context/MyContext";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
-import { red } from "@mui/material/colors";
-import TextField from "@mui/material/TextField";
-import { upload } from "@testing-library/user-event/dist/upload";
-export default function TaskItemComponenet({ todo, handeCheckClick }) {
-  const { todos, setTodos } = useContext(TodosContent);
+import { useAlert } from "./Context/AlertContext";
+export default function TaskItemComponenet({ todo, setOpenState, setSelectedTodoId, handleEditeConfirm, setEditState, setEditedTodo }) {
 
-  const [open, setOpen] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const [editedTodo, setEditedTodo] = useState({title: todo.title, description: todo.description})
-
-
+  const {todos, dispatch} = useTodos()
+  // const { todos, setTodos } = useContext(TodosContent);
+  const { showHideAlert } = useAlert();
   function handelCkick() {
-    const updateTodos = todos.map((t) => {
-      if (t.id == todo.id) {
-        t.isCompleted = !t.isCompleted;
-      }
-      return t;
-    });
-    localStorage.setItem('todos', JSON.stringify(updateTodos))
-    setTodos(updateTodos);
+    dispatch({type:"toggledCompleted", payload: todo})
+    showHideAlert("تم العديل بنجاح")
   }
 
   function handelClickDelete() {
-    setOpen(true);
-  }
-
-  function handelClose() {
-    setOpen(false);
+    setOpenState(true);
   }
 
   function handelEditClick() {
-    setEdit(true);
+    setEditState(true);
   }
 
-  function handelEditClose() {
-    setEdit(false);
-  }
-
-  function handleDeleteConfirm(idToDelete) {
-    const upTodos = todos.filter((todu) => todu.id !== idToDelete);
-    localStorage.setItem('todos', JSON.stringify(upTodos))
-    setTodos(upTodos);
-    // setTodos(edit) 
+  function handleDeleteConfirm() {
+    setOpenState(true)
+    setSelectedTodoId(todo)
   }
 
   function handleEditeConfirm() {
-    const editTodos = todos.map((t) => {
-        if(t.id == todo.id) {
-            return {...t, title: editedTodo.title, description: editedTodo.description}
-        } else {
-            return t;
-        }
+    setEditState(true)
+    setSelectedTodoId(todo)
+    setEditedTodo({
+      title: todo.title,
+      description: todo.description,
     })
-    localStorage.setItem('todos', JSON.stringify(editTodos))
-    setTodos(editTodos)
-    setEdit(false)
   }
 
   return (
     <>
-      {/* START DELETE MODAL  */}
-      <Dialog
-        sx={{ direction: "rtl" }}
-        open={open}
-        onClose={handelClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          هل أنت مأكد من رغبتك في حذف المهمة
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            لايمكنك التراجع عن الحذف بعد إتمامه
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handelClose}>إغلاق</Button>
-          <Button
-            autoFocus
-            onClick={() => {
-              handleDeleteConfirm(todo.id);
-            }}
-          >
-            نعم قم بالحذف
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/* END DELETE MODAL */}
 
-      {/* START EDiT MODAL */}
-      <Dialog
-        sx={{ direction: "rtl" }}
-        open={edit}
-        onClose={handelEditClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          تعديل المهمة
-        </DialogTitle>
-        <DialogTitle id="alert-dialog-title">
-          <TextField
-            style={{ width: "300px" }}
-            autoFocus
-            required
-            margin="dense"
-            id="name"
-            name="email"
-            label="عنوان المهمة"
-            variant="standard"
-            value={editedTodo.title}
-            onChange={(e) => {
-                setEditedTodo({...editedTodo, title: e.target.value})
-            }}
-          />
-        </DialogTitle>
-        <DialogContent>
-          <TextField
-            style={{ width: "300px" }}
-            autoFocus
-            required
-            margin="dense"
-            id="name"
-            name="email"
-            label="التفاصيل"
-            type="text"
-            variant="standard"
-            value={editedTodo.description}
-            onChange={(e) => {
-              setEditedTodo({...editedTodo, description: e.target.value})
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handelEditClose}>إلغاء</Button>
-          <Button
-            onClick={() => {
-              handleEditeConfirm(todo.id);
-            }}
-            autoFocus
-          >
-            تعديل
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/* END EDIT MODAL */}
       <div className="item">
         <div className="item__icons" style={{ display: "flex", gap: "15px" }}>
           <button
-            onClick={handelClickDelete}
+            onClick={() => {
+              handleDeleteConfirm()
+            }}
             style={{
               cursor: "pointer",
               border: "1px solid red",
@@ -174,7 +58,7 @@ export default function TaskItemComponenet({ todo, handeCheckClick }) {
             <DeleteIcon sx={{ color: "#d50000" }} />
           </button>
           <button
-            onClick={handelEditClick}
+            onClick={handleEditeConfirm}
             style={{
               cursor: "pointer",
               border: "1px solid #a99f9f",
@@ -219,12 +103,23 @@ export default function TaskItemComponenet({ todo, handeCheckClick }) {
               // padding: "15px 0",
               textAlign: "right",
               margin: 0,
-              textDecoration: todo.isCompleted ? "line-through" : ""
+              textDecoration: todo.isCompleted ? "line-through" : "",
             }}
           >
             {todo.title}
           </p>
-          <br /> <span style={{ color: "#212121", textAlign: "right", display: "block", marginTop: "-15px" }}> {todo.description}</span>
+          <br />{" "}
+          <span
+            style={{
+              color: "#212121",
+              textAlign: "right",
+              display: "block",
+              marginTop: "-15px",
+            }}
+          >
+            {" "}
+            {todo.description}
+          </span>
         </div>
       </div>
     </>
